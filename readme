@@ -1,0 +1,13 @@
+assumptions:
+count: 2 bytes as for now i am considering files not more tha 2^16
+I am using sprintf to convert integer to string i.e converting filesize(long) as returned by ftell into unsigned char* (as required by encoder).
+
+create_vd takes 2 arguments i.e vd size and vd name, based on size it creates file name vdname and appends zeros in the file and reserves first 2 bytes for count.
+
+vdAdd take 2 arguments i.e vdname, path of the file to be copied
+
+vdget takes 3 arguments i.e vdname, fileno, name of the file to which the file needs to be copied.
+
+vdcount take vdname/path as argument and return count of file stored in vd
+
+vdls takes vd path and list down fileno filesize and their names
