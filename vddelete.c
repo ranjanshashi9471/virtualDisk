@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
                 }
                 dec_out d1 = decode_file(fp, bits); // reading length of file
 
-                bits = (d1.lst_byte) % 8;
+                bits = (d1.tot_bits_read - (8 - bits)) % 8;
                 if (bits != 0)
                 {
                         fseek(fp, -1, SEEK_CUR);
                 }
                 dec_out d2 = decode_file(fp, bits); // reading name of file
 
-                bits = (d2.lst_byte) % 8;
+                bits = (d2.tot_bits_read - (8 - bits)) % 8;
         }
         if (bits != 0)
         {
@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
         }
         fread(&buff, 1, 1, fp);
         buff = buff | (((buff >> (8 - (bits + 1))) | 1) << (8 - (bits + 1)));
+        printf("buff %d\n", buff);
         fseek(fp, -1, SEEK_CUR);
         fwrite(&buff, 1, 1, fp);
         fclose(fp);

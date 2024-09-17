@@ -1,5 +1,6 @@
 #include <stdio.h>
-unsigned char cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsigned char lst_fill_bit)
+
+void cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsigned char lst_fill_bit)
 {
         unsigned int i = 0;
         unsigned char bitsWritten = lst_fill_bit;
@@ -49,10 +50,9 @@ unsigned char cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsig
                         bitsRead = flagBits;
                 }
         }
-        bitsWritten %= 8;
         if (bitsWritten != 0)
         {
                 fwrite(&out, 1, 1, fp);
         }
-        return bitsWritten;
+        // return bitsWritten;
 }

@@ -31,11 +31,11 @@ int main(int argc, char *argv[])
 
     fseek(fp1, 0, SEEK_END);
     givenFileSize = ftell(fp1);
+    unsigned int bytes = 0;
     unsigned char bits = 0;
     unsigned char buff;
     for (int i = 0; i < count; i++)
     {
-
         if (bits != 0)
         {
             fseek(fp, -1, SEEK_CUR);
@@ -48,16 +48,13 @@ int main(int argc, char *argv[])
             fseek(fp, -1, SEEK_CUR);
         }
         dec_out d1 = decode_file(fp, bits); // reading length of file
-
-        bits = (d1.lst_byte) % 8;
+        bits = (d1.tot_bits_read - (8 - bits)) % 8;
         if (bits != 0)
         {
             fseek(fp, -1, SEEK_CUR);
         }
         dec_out d2 = decode_file(fp, bits); // reading name of file
-
-        bits = (d2.lst_byte) % 8;
-
+        bits = (d2.tot_bits_read - (8 - bits)) % 8;
         metaDataSize += d1.tot_bits_read;
         totalFSize += atoi(d1.decoded_string);
         metaDataSize += d2.tot_bits_read;
@@ -91,13 +88,17 @@ int main(int argc, char *argv[])
     {
         fseek(fp, -1, SEEK_CUR);
     }
-    bits = cpy_to_fp(fp, e1.encoded_text, strlen(e1.encoded_text), bits);
-    if (bits != 0)
-    {
-        fseek(fp, -1, SEEK_CUR);
-    }
-    bits = cpy_to_fp(fp, e2.encoded_text, strlen(e2.encoded_text), bits);
+    unsigned int tmpfp = ftell(fp);
+    cpy_to_fp(fp, e1.encoded_text, strlen(e1.encoded_text), bits);
+    bytes = floor((double)(e1.encoded_bits - (8 - bits)) / 8);
+    bits = (e1.encoded_bits - (8 - bits)) % 8;
+    printf("BYTES %d Bits after writing file size %d  %d\n", bytes, bits, e1.encoded_bits);
+    fseek(fp, tmpfp + bytes + 1, SEEK_SET);
 
+    cpy_to_fp(fp, e2.encoded_text, strlen(e2.encoded_text), bits);
+    // bytes = floor((double)(e2.encoded_bits - (8 - bits)) / 8);
+    // bits = (e2.encoded_bits - (8 - bits)) % 8;
+    // printf("BYTES %d Bits after writing file name %d  %d\n", bytes, bits, e2.encoded_bits);
     fseek(fp, ((vdSize)-totalFSize), SEEK_SET);
     fseek(fp1, 0, SEEK_SET);
     // copying file
