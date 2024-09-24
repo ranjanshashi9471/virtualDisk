@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
                 }
                 dec_out d2 = decode_file(fp, bits); // reading name of file
                 bits = (d2.tot_bits_read - (8 - bits)) % 8;
-                metaDataSize += d1.tot_bits_read;
+                metaDataSize += d1.tot_bits_read + 1;
                 metaDataSize += d2.tot_bits_read;
                 totalFSize += atoi(d1.decoded_string);
                 if (!buff)

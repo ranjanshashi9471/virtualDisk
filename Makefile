@@ -1,4 +1,6 @@
-all: vdls vdget vdcount vdAdd create_vd vddelete
+all: vdls vdget vdcount vdAdd create_vd vddelete vddefrag
+vddefrag: vddefrag.o edca.a
+	gcc -o vddefrag vddefrag.o decodeFile.o cpy_to_fp.o -lm
 vddelete: vddelete.o edca.a
 	gcc -o vddelete vddelete.o decodeFile.o -lm
 vdls: vdls.o edca.a
@@ -11,6 +13,8 @@ vdAdd: vdAdd.o edca.a
 	gcc -o vdAdd vdAdd.o encode.o  decodeFile.o cpy_to_fp.o -lm
 create_vd: create_vd.o edca.a
 	gcc -o create_vd create_vd.o encode.o  decodeFile.o -lm
+vddefrag.o: vddefrag.c edca.a
+	gcc -c vddefrag.c
 vddelete.o: vddelete.c
 	gcc -c vddelete.c
 vdls.o: vdls.c edca.a
@@ -32,4 +36,4 @@ decodeFile.o: decodeFile.c
 cpy_to_fp.o: cpy_to_fp.c
 	gcc -c cpy_to_fp.c
 clean:
-	rm -rf *.o *.a vdAdd vdls vdcount vdget create_vd vddelete vd
+	rm -rf *.o *.a vdAdd vdls vdcount vdget create_vd vddelete vddefrag vd

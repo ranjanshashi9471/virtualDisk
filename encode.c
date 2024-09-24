@@ -1,4 +1,3 @@
-
 #include "struct_header.h"
 
 unsigned int calculate_bits_req(unsigned int count)
