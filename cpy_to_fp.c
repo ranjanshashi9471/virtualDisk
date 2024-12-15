@@ -2,30 +2,50 @@
 
 void cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsigned char lst_fill_bit)
 {
+        if (lst_fill_bit >= 8)
+        {
+                fprintf(stderr, "Invalid lst_fill_bit value\n");
+                return;
+        }
+
         unsigned int i = 0;
         unsigned char bitsWritten = lst_fill_bit;
         unsigned char bitsRead = 0;
         unsigned char out = 0;
+
+        // If last byte is partially filled, read it
         if (lst_fill_bit != 0)
         {
-                fread(&out, 1, 1, fp);
+                if (fread(&out, 1, 1, fp) != 1)
+                {
+                        perror("Error reading file");
+                        return;
+                }
                 fseek(fp, -1, SEEK_CUR);
         }
+
         unsigned flag = 0;
         unsigned flagBits = 0;
-        while (i < in_size) // i shows the byte count of input
+
+        while (i < in_size)
         {
                 if (bitsWritten == 8)
                 {
-                        fwrite(&out, 1, 1, fp);
+                        if (fwrite(&out, 1, 1, fp) != 1)
+                        {
+                                perror("Error writing file");
+                                return;
+                        }
                         out = 0;
                         bitsWritten = 0;
                 }
+
                 if (bitsRead == 8)
                 {
                         i++;
                         bitsRead = 0;
                 }
+
                 if (flag)
                 {
                         flag = 0;
@@ -35,7 +55,7 @@ void cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsigned char 
                         flagBits = 0;
                         bitsRead = flagBits;
                 }
-                if ((bitsWritten == 0) && (bitsRead == 0))
+                else if (bitsWritten == 0 && bitsRead == 0)
                 {
                         out = in[i];
                         bitsRead = 8;
@@ -50,9 +70,12 @@ void cpy_to_fp(FILE *fp, unsigned char *in, unsigned int in_size, unsigned char 
                         bitsRead = flagBits;
                 }
         }
+
         if (bitsWritten != 0)
         {
-                fwrite(&out, 1, 1, fp);
+                if (fwrite(&out, 1, 1, fp) != 1)
+                {
+                        perror("Error writing file");
+                }
         }
-        // return bitsWritten;
 }
