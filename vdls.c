@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         // Calculate available space
         fseek(fp, 0, SEEK_END);
         vdSize = ftell(fp);
-        printf("Virtual Disk Size: %ld bytes\n", vdSize);
+        printf("Virtual Disk Size: %d bytes\n", vdSize);
         printf("Metadata Size: %d bytes\n", (int)ceil((double)metaDataSize / 8));
         printf("Available space: %d bytes\n", (vdSize - (2 + totalFSize + (int)ceil((double)metaDataSize / 8))));
 
